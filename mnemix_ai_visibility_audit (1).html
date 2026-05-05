@@ -1,0 +1,331 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:#111;font-family:'DM Sans',sans-serif;color:#F5F0E8;min-height:100vh;overflow-x:hidden;}
+:root{
+  --ember:#FF6B2B;--ember-dim:rgba(255,107,43,0.15);--gold:#FFB547;
+  --warm:#F5F0E8;--warm-dim:#9a9590;--charcoal:#1a1a1a;--border:rgba(255,107,43,0.2);
+}
+.wrap{max-width:780px;margin:0 auto;padding:56px 24px 80px;position:relative;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(255,107,43,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,43,0.035) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0;}
+.orb{position:fixed;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,43,0.06) 0%,transparent 68%);top:-260px;right:-260px;pointer-events:none;z-index:0;}
+.content{position:relative;z-index:1;}
+.eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:24px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ember);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+.eyebrow-label{font-size:10.5px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--ember);}
+h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5.5vw,54px);font-weight:800;line-height:1.06;margin-bottom:16px;}
+h1 em{color:var(--ember);font-style:normal;}
+.sub{font-size:15px;font-weight:300;color:var(--warm-dim);line-height:1.7;max-width:520px;margin-bottom:48px;}
+.divider{width:48px;height:2px;background:var(--ember);margin-bottom:40px;opacity:0.7;}
+
+.card{background:#161616;border:1px solid var(--border);border-radius:16px;padding:40px;}
+
+.field-group{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.field-group.full{grid-template-columns:1fr;}
+.field label{display:block;font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--warm-dim);margin-bottom:8px;}
+.field input{width:100%;background:#1e1e1e;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14.5px;color:var(--warm);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.field input::placeholder{color:#555;}
+.field input:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(255,107,43,0.12);}
+.field input.err{border-color:#e24b4a;}
+
+.submit-btn{width:100%;margin-top:24px;padding:16px;background:var(--ember);border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:0.04em;transition:background 0.2s,transform 0.1s;}
+.submit-btn:hover{background:#e05a20;}
+.submit-btn:active{transform:scale(0.99);}
+.submit-btn:disabled{background:#3a2218;color:#7a5040;cursor:not-allowed;}
+
+.progress-wrap{display:none;margin-top:40px;}
+.progress-wrap.active{display:block;}
+.progress-steps{display:flex;align-items:center;gap:0;margin-bottom:28px;}
+.step-item{display:flex;align-items:center;gap:8px;flex:1;}
+.step-item:last-child{flex:none;}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;transition:all 0.4s;flex-shrink:0;}
+.step-dot.done{background:var(--ember);border-color:var(--ember);}
+.step-dot.active{border-color:var(--ember);box-shadow:0 0 0 4px rgba(255,107,43,0.2);}
+.step-dot svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.step-dot .ring{width:10px;height:10px;border-radius:50%;border:2px solid var(--ember);animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.step-label{font-size:12px;font-weight:500;color:#555;transition:color 0.3s;white-space:nowrap;}
+.step-label.active{color:var(--warm);}
+.step-label.done{color:var(--ember);}
+.step-line{flex:1;height:1px;background:#2a2a2a;margin:0 8px;transition:background 0.4s;}
+.step-line.done{background:var(--ember);}
+.progress-bar-track{height:3px;background:#222;border-radius:2px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--ember),var(--gold));border-radius:2px;width:0%;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+.progress-msg{font-size:13px;color:var(--warm-dim);margin-top:14px;min-height:20px;transition:opacity 0.3s;}
+
+.result-wrap{display:none;margin-top:40px;}
+.result-wrap.active{display:block;animation:fadeUp 0.5s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.result-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+.result-brand{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--warm);}
+.result-brand span{color:var(--warm-dim);font-size:14px;font-weight:400;display:block;margin-top:2px;font-family:'DM Sans',sans-serif;}
+
+.score-ring-wrap{text-align:center;flex-shrink:0;}
+.score-circle{width:90px;height:90px;position:relative;}
+.score-circle svg{transform:rotate(-90deg);}
+.score-circle .track{stroke:#2a2a2a;stroke-width:5;fill:none;}
+.score-circle .fill{stroke:var(--ember);stroke-width:5;fill:none;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:220;transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);}
+.score-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--warm);line-height:1;}
+.score-denom{font-size:10px;color:var(--warm-dim);margin-top:2px;}
+
+.verdict-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;}
+.verdict-badge.poor{background:rgba(226,75,74,0.12);border:1px solid rgba(226,75,74,0.3);color:#e24b4a;}
+.verdict-badge.moderate{background:rgba(255,181,71,0.1);border:1px solid rgba(255,181,71,0.3);color:var(--gold);}
+.verdict-badge.good{background:rgba(255,107,43,0.12);border:1px solid rgba(255,107,43,0.3);color:var(--ember);}
+.verdict-badge.strong{background:rgba(97,195,100,0.1);border:1px solid rgba(97,195,100,0.3);color:#61c364;}
+
+.result-divider{height:1px;background:rgba(255,255,255,0.06);margin:20px 0;}
+
+.summary-label{font-size:10.5px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--warm-dim);margin-bottom:10px;}
+.summary-text{font-size:14.5px;font-weight:300;color:var(--warm);line-height:1.75;}
+
+.cta-row{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+.cta-primary{flex:1;min-width:160px;padding:13px 20px;background:var(--ember);border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:0.04em;text-align:center;}
+.cta-secondary{flex:1;min-width:160px;padding:13px 20px;background:transparent;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--warm-dim);cursor:pointer;text-align:center;}
+.cta-secondary:hover{border-color:var(--ember);color:var(--warm);}
+
+.error-msg{background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.3);border-radius:8px;padding:12px 16px;font-size:13px;color:#e24b4a;margin-top:16px;display:none;}
+.error-msg.active{display:block;}
+</style>
+
+<div class="grid-bg"></div>
+<div class="orb"></div>
+
+<div class="wrap">
+  <div class="content">
+    <div class="eyebrow"><div class="dot"></div><span class="eyebrow-label">AI Visibility Audit — Free Report</span></div>
+    <h1>Is AI forgetting<br><em>your brand?</em></h1>
+    <p class="sub">In 60 seconds, find out how visible your brand is across ChatGPT, Gemini, and Perplexity — and what it's costing you.</p>
+    <div class="divider"></div>
+
+    <div class="card">
+      <div id="form-section">
+        <div class="field-group">
+          <div class="field">
+            <label>Brand Name</label>
+            <input type="text" id="brand_name" placeholder="e.g. Nykaa, Mamaearth" />
+          </div>
+          <div class="field">
+            <label>Brand Website</label>
+            <input type="text" id="brand_website" placeholder="e.g. https://nykaa.com" />
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label>Work Email</label>
+            <input type="email" id="email_id" placeholder="you@company.com" />
+          </div>
+          <div class="field">
+            <label>Phone Number</label>
+            <input type="tel" id="phone_number" placeholder="+91 98765 43210" />
+          </div>
+        </div>
+        <button class="submit-btn" id="submit-btn" onclick="submitAudit()">Run My AI Visibility Audit →</button>
+        <div class="error-msg" id="error-msg">Something went wrong. Please try again or reach out to us directly.</div>
+      </div>
+
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-steps">
+          <div class="step-item">
+            <div class="step-dot" id="dot-0"><div class="ring" id="ring-0"></div></div>
+            <span class="step-label active" id="lbl-0">Scanning</span>
+          </div>
+          <div class="step-line" id="line-0"></div>
+          <div class="step-item">
+            <div class="step-dot" id="dot-1"></div>
+            <span class="step-label" id="lbl-1">Analysing</span>
+          </div>
+          <div class="step-line" id="line-1"></div>
+          <div class="step-item">
+            <div class="step-dot" id="dot-2"></div>
+            <span class="step-label" id="lbl-2">Scoring</span>
+          </div>
+        </div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-fill"></div></div>
+        <div class="progress-msg" id="prog-msg">Scanning your brand across AI platforms…</div>
+      </div>
+
+      <div class="result-wrap" id="result-wrap">
+        <div class="result-header">
+          <div>
+            <div class="result-brand" id="res-brand">Brand<span id="res-website"></span></div>
+            <div class="verdict-badge moderate" id="res-verdict">Calculating…</div>
+          </div>
+          <div class="score-ring-wrap">
+            <div class="score-circle">
+              <svg viewBox="0 0 90 90" width="90" height="90">
+                <circle class="track" cx="45" cy="45" r="35"/>
+                <circle class="fill" id="score-arc" cx="45" cy="45" r="35"/>
+              </svg>
+              <div class="score-text">
+                <div class="score-num" id="res-score">—</div>
+                <div class="score-denom">/70</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-divider"></div>
+        <div class="summary-label">Audit Summary</div>
+        <div class="summary-text" id="res-summary">Generating your report…</div>
+
+        <div class="cta-row">
+          <button class="cta-primary" onclick="alert('Full PDF report coming soon — our team will reach out!')">Get Full 100-Point Report →</button>
+          <button class="cta-secondary" onclick="resetForm()">Run Another Audit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const WEBHOOK = 'https://n8n.srv1139748.hstgr.cloud/webhook/f72a4738-0db8-4da2-84a7-3031388c6851';
+
+const msgs = [
+  'Scanning your brand across AI platforms…',
+  'Checking citation coverage on ChatGPT & Gemini…',
+  'Analysing sentiment and recommendation patterns…',
+  'Cross-referencing brand signals…',
+  'Calculating your visibility score…'
+];
+
+let msgTimer, stepTimer, msgIdx = 0;
+
+function $(id){ return document.getElementById(id); }
+
+function setStep(n){
+  for(let i=0;i<3;i++){
+    const dot=$('dot-'+i), lbl=$('lbl-'+i);
+    dot.innerHTML='';
+    if(i<n){
+      dot.classList.add('done');
+      dot.classList.remove('active');
+      dot.innerHTML='<svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>';
+      lbl.className='step-label done';
+      if(i<2) $('line-'+i).classList.add('done');
+    } else if(i===n){
+      dot.classList.remove('done');
+      dot.classList.add('active');
+      dot.innerHTML='<div class="ring"></div>';
+      lbl.className='step-label active';
+    } else {
+      dot.classList.remove('done','active');
+      lbl.className='step-label';
+    }
+  }
+  const pcts=[8,40,75];
+  $('prog-fill').style.width=pcts[n]+'%';
+}
+
+function cycleMsgs(){
+  msgIdx=(msgIdx+1)%msgs.length;
+  $('prog-msg').style.opacity=0;
+  setTimeout(()=>{ $('prog-msg').textContent=msgs[msgIdx]; $('prog-msg').style.opacity=1; },300);
+}
+
+function getVerdictClass(score){
+  if(score>=56) return ['strong','Strong Visibility'];
+  if(score>=42) return ['good','Moderate Visibility'];
+  if(score>=21) return ['moderate','Low Visibility'];
+  return ['poor','Invisible to AI'];
+}
+
+function animateScore(val, max){
+  const arc=$('score-arc');
+  const circ=2*Math.PI*35;
+  const pct=Math.min(val/max,1);
+  const offset=circ-(circ*pct);
+  setTimeout(()=>{ arc.style.strokeDashoffset=offset; },200);
+  let cur=0;
+  const step=Math.ceil(val/40);
+  const t=setInterval(()=>{
+    cur=Math.min(cur+step,val);
+    $('res-score').textContent=cur;
+    if(cur>=val) clearInterval(t);
+  },30);
+}
+
+async function submitAudit(){
+  const fields=['brand_name','brand_website','email_id','phone_number'];
+  let valid=true;
+  fields.forEach(id=>{ const el=$(id); el.classList.remove('err'); if(!el.value.trim()){ el.classList.add('err'); valid=false; } });
+  if(!valid) return;
+
+  $('submit-btn').disabled=true;
+  $('error-msg').classList.remove('active');
+  $('progress-wrap').classList.add('active');
+  setStep(0);
+  $('prog-msg').textContent=msgs[0];
+  msgTimer=setInterval(cycleMsgs,4000);
+
+  stepTimer=setTimeout(()=>setStep(1),8000);
+  const stepTimer2=setTimeout(()=>setStep(2),22000);
+
+  const payload={
+    brand_name: $('brand_name').value.trim(),
+    brand_website: $('brand_website').value.trim(),
+    email_id: $('email_id').value.trim(),
+    phone_number: $('phone_number').value.trim()
+  };
+
+  try {
+    const res=await fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    clearInterval(msgTimer); clearTimeout(stepTimer); clearTimeout(stepTimer2);
+
+    if(!res.ok){
+      const text=await res.text();
+      console.error('n8n error response:',text);
+      throw new Error('Non-200');
+    }
+    const raw=await res.json();
+    console.log('n8n raw response:',raw);
+    const data=raw.result||raw;
+
+    $('prog-fill').style.width='100%';
+    setStep(3);
+    $('prog-msg').textContent='Audit complete.';
+
+    await new Promise(r=>setTimeout(r,700));
+
+    const brand=data.brand_name||payload.brand_name;
+    const score=parseInt(data.full_score||data.score||0);
+    const verdict=data.verdict||'';
+    const summary=data.summary||data.short_summary||'Your audit has been completed. Our team will follow up with your full report.';
+    const website=data.brand_website||payload.brand_website;
+
+    $('res-brand').childNodes[0].textContent=brand;
+    $('res-website').textContent=website;
+
+    const [vcls,vlabel]= verdict ? [getVerdictClass(score)[0], verdict] : getVerdictClass(score);
+    const vbadge=$('res-verdict');
+    vbadge.className='verdict-badge '+vcls;
+    vbadge.textContent=vlabel;
+
+    $('res-summary').textContent=summary;
+    animateScore(score,70);
+
+    $('progress-wrap').classList.remove('active');
+    $('result-wrap').classList.add('active');
+
+  } catch(e){
+    clearInterval(msgTimer); clearTimeout(stepTimer); clearTimeout(stepTimer2);
+    $('progress-wrap').classList.remove('active');
+    $('submit-btn').disabled=false;
+    $('error-msg').classList.add('active');
+  }
+}
+
+function resetForm(){
+  ['brand_name','brand_website','email_id','phone_number'].forEach(id=>{ $(id).value=''; $(id).classList.remove('err'); });
+  $('result-wrap').classList.remove('active');
+  $('progress-wrap').classList.remove('active');
+  $('submit-btn').disabled=false;
+  $('prog-fill').style.width='0%';
+  $('score-arc').style.strokeDashoffset=220;
+  $('res-score').textContent='—';
+  msgIdx=0;
+}
+</script>
